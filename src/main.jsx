@@ -44,7 +44,16 @@ useEffect(() => {
   }
 
   return (
-    <div>
+    <div style={{
+      minHeight: "100vh",
+      background: "radial-gradient(circle at top, #1e293b 0%, #0f172a 55%, #020617 100%)",
+      color: "#f8fafc",
+      padding: "32px 20px 48px",
+      boxSizing: "border-box",
+      fontFamily: "Inter, system-ui, sans-serif",
+      maxWidth: "100%",
+      margin: "0 auto",
+    }}>
       <input
         type="text"
         placeholder="Search movies..."
@@ -63,7 +72,7 @@ useEffect(() => {
         setPage(1);
         setIsSearching(false);
 
-      }} style={{ marginLeft: "10px" }}>
+      }} style={{ marginLeft: "10px", padding: "10px", cursor: "pointer", fontWeight: "bold" }}>
         Clear
       </button>
       <h1>Top Rated Movies</h1>
