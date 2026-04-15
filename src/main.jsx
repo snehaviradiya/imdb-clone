@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -8,24 +8,29 @@ function App() {
   const [isSearching, setIsSearching] = useState(false);
   const API_KEY = "b36e5cdfe4e53d00b3baaa3b9cc61415";
 
-  useEffect(() => {
-    if (isSearching) return;
-    fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}&page=${page}`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error("Network response failed");
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (!data.results) return;
+useEffect(() => {
+  if (isSearching) return;
 
 
-        setMovies(prev => [...prev, ...data.results]);
-      })
-      .catch(err => console.error("Error:", err));
-  }, [page]); 
-  
+  const currentPage = page || 1;
+
+  fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}&page=${currentPage}`)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error("Network response failed");
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (!data.results) return;
+
+      setMovies(prev =>
+        currentPage === 1 ? data.results : [...prev, ...data.results]
+      );
+    })
+    .catch(err => console.error("Error:", err));
+}, [page, isSearching]);
+
   function handleSearch() {
   if (!query.trim()) return;
 
@@ -52,14 +57,15 @@ function App() {
         style={{ padding: "10px", cursor: "pointer" }}>
         Search
       </button>
-              <button onClick={() => {
-          setQuery("");
-          setIsSearching(false);
-          setMovies([]);
-          setPage(1);
-        }} style={{ marginLeft: "10px" }}>
-          Clear
-        </button>
+      <button onClick={() => {
+        setQuery("");
+        setMovies([]);
+        setPage(1);
+        setIsSearching(false);
+
+      }} style={{ marginLeft: "10px" }}>
+        Clear
+      </button>
       <h1>Top Rated Movies</h1>
       
       <div style={{display: "grid",gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",gap: "20px",padding: "20px"
